@@ -31,7 +31,7 @@ function mouseDragged(){
 }
 
 function mouseMoved(){
-    // console.log('moved');
+    zones.forEach( d => d.mouseIsOver() );
 }
 
 function mouseReleased(){
