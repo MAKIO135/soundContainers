@@ -21,7 +21,9 @@ var soundParams = {
 
     agentSpeedX : 1,
     agentSpeedY : -1,
-    rangem55:[ -5, 1 ]
+    rangem55:[ -5, 1 ],
+    frequence: 600,
+    range20k: [ 20, 16000 ]
 };
 
 
@@ -33,15 +35,30 @@ function setup(){
         .addGroup( { label: 'Agents' } )
         .addSlider( soundParams, 'agentSpeedX', 'rangem55' )
         .addSlider( soundParams, 'agentSpeedY', 'rangem55' )
-        .addGroup( { label: 'WaveType' } )
+        .addGroup( { label: 'Sound Design' } )
         .addStringInput( soundParams, 'oscillatorType', { presets: [ 'sine', 'triangle', 'sawtooth', 'square' ] })
-        .addGroup( { label: 'ADSR' } )
         .addSlider( soundParams, 'attackLevel', 'range01' )
         .addSlider( soundParams, 'releaseLevel', 'range01' )
         .addSlider( soundParams, 'attackTime', 'range01' )
         .addSlider( soundParams, 'decayTime', 'range01' )
         .addSlider( soundParams, 'susPercent', 'range01' )
-        .addSlider( soundParams, 'releaseTime', 'range01' );
+        .addSlider( soundParams, 'releaseTime', 'range01' )
+        .addSlider( soundParams, 'frequence', 'range20k' )
+        .addButton( 'listen', function(){
+            var env = new p5.Env();
+            env.setADSR(
+                soundParams.attackTime, soundParams.decayTime, soundParams.susPercent, soundParams.releaseTime
+            );
+            env.setRange(
+                soundParams.attackLevel, soundParams.releaseLevel
+            );
+            var osc = new p5.Oscillator( soundParams.oscillatorType );
+            osc.amp( env );
+            osc.freq( soundParams.frequence );
+            osc.start();
+
+            env.play();
+        } );
 }
 
 function draw(){
